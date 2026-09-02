@@ -1,4 +1,4 @@
-# 只关 8188 隧道，不动镜场画布。
+# Close the 8188 tunnel only. Leave Shotfield running.
 $n = 0
 Get-CimInstance Win32_Process | Where-Object {
   $_.Name -match "^(ssh|plink)\.exe$" -and $_.CommandLine -match "8188:127.0.0.1"
@@ -7,7 +7,7 @@ Get-CimInstance Win32_Process | Where-Object {
   $n++
 }
 if ($n) {
-  Write-Host "云端隧道已关掉。画布还开着的话请自己关「启动镜场」窗口。"
+  Write-Host "Cloud tunnel closed. Close the start.bat window if you also want to stop Shotfield."
 } else {
-  Write-Host "没找到 8188 隧道。"
+  Write-Host "No 8188 tunnel found."
 }

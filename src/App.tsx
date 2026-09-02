@@ -206,7 +206,7 @@ export default function App() {
     () => nodes.find((n) => n.data.kind === "script" && n.data.script.shots.length),
     [nodes],
   );
-  const [cloud, setCloud] = useState("本机 Comfy");
+  const [cloud, setCloud] = useState("Comfy");
   const [plus, setPlus] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -215,7 +215,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    comfyStatus().then((r) => setCloud(r.ok ? "Comfy 已连" : "Comfy 未开"));
+    comfyStatus().then((r) => setCloud(r.ok ? "Comfy on" : "Comfy off"));
   }, []);
 
   if (!ready) {
@@ -223,8 +223,8 @@ export default function App() {
       <div className="app">
         <section className="stage">
           <div className="empty-hint">
-            <h2>镜场</h2>
-            <p>正在载入画布…</p>
+            <h2>Shotfield</h2>
+            <p>Loading…</p>
           </div>
         </section>
       </div>
@@ -235,9 +235,9 @@ export default function App() {
     <div className={`app ${scriptFull ? "studio-on" : ""}`}>
       <header className="top">
         <div className="left">
-          <input className="ws" value={bible.title} onChange={(e) => setBible({ title: e.target.value })} placeholder="未命名画布" />
+          <input className="ws" value={bible.title} onChange={(e) => setBible({ title: e.target.value })} placeholder="Untitled" />
           <button type="button" className="ghost" onClick={() => useStudio.getState().newCanvas()}>
-            新建画布
+            New
           </button>
           <HistoryButton />
         </div>
@@ -245,21 +245,21 @@ export default function App() {
           {scriptNode && !scriptFull ? (
             <div className="script-tools">
               <button type="button" onClick={() => useStudio.getState().setScriptFull(scriptNode.id)}>
-                打开脚本节点
+                Open script
               </button>
               {scriptNode.data.kind === "script" && scriptNode.data.promptsReady ? (
                 <>
                   <button type="button" className="primary" onClick={() => useStudio.getState().armBatch(scriptNode.id, "boards")}>
-                    批量生成分镜
+                    Batch boards
                   </button>
                   <button type="button" className="primary" onClick={() => useStudio.getState().armBatch(scriptNode.id, "videos")}>
-                    批量生成视频
+                    Batch video
                   </button>
                 </>
               ) : null}
               {scriptNode.data.kind === "script" ? (
                 <button type="button" onClick={() => useStudio.getState().armBatch(scriptNode.id, "audios")}>
-                  批量生成配音
+                  Batch voice
                 </button>
               ) : null}
             </div>
@@ -268,7 +268,7 @@ export default function App() {
           <LlmPicker />
           <button type="button" onClick={() => setSettingsOpen(true)}>
             <Settings2 size={16} />
-            设置
+            Settings
           </button>
         </div>
       </header>
@@ -305,8 +305,8 @@ export default function App() {
         {scriptFull ? <ScriptStudio id={scriptFull} /> : null}
         {!nodes.length ? (
           <div className="empty-hint">
-            <h2>镜场</h2>
-            <p>空白画布。点「从一份剧本开始」，或把 txt 拖进来。左上角「新建画布」随时清空重来。</p>
+            <h2>Shotfield</h2>
+            <p>Empty canvas. Click Start from a script, or drop a txt. New canvas anytime from the top left.</p>
             <button
               type="button"
               className="primary"
@@ -315,9 +315,9 @@ export default function App() {
                 useStudio.getState().addConnected(play, "script", { x: 520, y: 140 });
               }}
             >
-              从一份剧本开始
+              Start from a script
             </button>
-            <p className="hint">或把 txt 直接拖进画布。从剧本右边的 + 拉出脚本生成器。以前的项目在「历史画布」。</p>
+            <p className="hint">Or drag a txt onto the canvas. Pull a script node from the + on the right. Past projects live in History.</p>
           </div>
         ) : null}
       </section>

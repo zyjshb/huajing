@@ -245,7 +245,7 @@ function emptyCanvas() {
     nodes: [],
     edges: [],
     bible: {
-      title: "未命名画布",
+      title: "Untitled",
       aspect: "16:9",
       duration: 6,
       style: "",
@@ -271,7 +271,7 @@ function metaOf(id: string, doc: CanvasDoc): CanvasMeta {
   const bible = doc.bible as { title?: string } | null | undefined;
   return {
     id,
-    title: (bible?.title || "未命名画布").trim() || "未命名画布",
+    title: (bible?.title || "Untitled").trim() || "Untitled",
     updatedAt: Date.now(),
     nodes: Array.isArray(doc.nodes) ? doc.nodes.length : 0,
   };
@@ -734,7 +734,7 @@ app.post("/api/generate/audio", async (req, res) => {
 });
 
 app.listen(8787, () => {
-  console.log("镜场 api http://127.0.0.1:8787");
+  console.log("Shotfield api http://127.0.0.1:8787");
   void (async () => {
     const s = readSettings();
     const cat = await scanComfy(s.comfyUrl, {
@@ -742,7 +742,7 @@ app.listen(8787, () => {
       video: isH3Family(videoFamily(s.i2vModel)) ? s.i2vModel : undefined,
     });
     if (!cat.ok) {
-      console.log("Comfy 未开，本机先改画布");
+      console.log("Comfy offline. Edit the canvas first.");
       return;
     }
     if (!cat.picked.video) return;
@@ -808,7 +808,7 @@ async function chat(messages: ChatMsg[], provider?: string, model?: string) {
   };
   if (usedProvider === "openrouter") {
     headers["HTTP-Referer"] = "http://127.0.0.1:5173";
-    headers["X-Title"] = "JingChang";
+    headers["X-Title"] = "Shotfield";
   }
   const payload: Record<string, unknown> = { model: usedModel, temperature: 0.7, messages };
   if (usedProvider === "deepseek") payload.thinking = { type: "disabled" };

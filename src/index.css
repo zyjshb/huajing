@@ -522,9 +522,9 @@ button.primary {
 .empty-hint h2 {
   margin: 0 0 14px;
   color: var(--text);
-  font-size: 40px;
+  font-size: 36px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
 }
 .empty-hint p { margin: 0; line-height: 1.7; }
 .empty-hint button {

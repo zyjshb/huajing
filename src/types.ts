@@ -185,7 +185,7 @@ export const emptyScript = (): ScriptPayload => ({
 });
 
 export const defaultBible = (): Bible => ({
-  title: "未命名画布",
+  title: "Untitled",
   aspect: "16:9",
   duration: 6,
   style: "",

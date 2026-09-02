@@ -30,7 +30,7 @@ export function LlmPicker({ className }: { className?: string }) {
 
   return (
     <div className={className || "llm-pick"}>
-      <span>大模型</span>
+      <span>Model</span>
       <select
         value={known ? value : "custom"}
         onChange={(e) => {
@@ -53,7 +53,7 @@ export function LlmPicker({ className }: { className?: string }) {
             ))}
           </optgroup>
         ))}
-        <option value="custom">{known ? "自定义模型 ID…" : `当前 ${catalog.llmModel}`}</option>
+        <option value="custom">{known ? "Custom model ID…" : `Current ${catalog.llmModel}`}</option>
       </select>
       {custom ? (
         <div className="llm-custom">
@@ -66,14 +66,14 @@ export function LlmPicker({ className }: { className?: string }) {
           </select>
           <input
             value={model}
-            placeholder="模型 ID，如 deepseek-v4-flash"
+            placeholder="Model ID, e.g. deepseek-v4-flash"
             onChange={(e) => setModel(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") apply(provider, model, true);
             }}
           />
           <button type="button" className="primary" onClick={() => apply(provider, model, true)}>
-            用这个
+            Use
           </button>
         </div>
       ) : null}

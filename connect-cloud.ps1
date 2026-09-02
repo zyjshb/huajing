@@ -1,4 +1,4 @@
-# 把云端 Comfy 映射到本机 8188。镜场画布请另开「启动镜场.bat」。
+# Map remote Comfy to local 8188. Canvas: start.bat
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
@@ -40,13 +40,13 @@ function Parse-SshTarget([string]$raw) {
 }
 
 Write-Host ""
-Write-Host "  云端隧道" -ForegroundColor Cyan
-Write-Host "  本机 127.0.0.1:8188  <-  机器上的 Comfy"
-Write-Host "  画布请另开「启动镜场.bat」，这边只负责连机器。"
+Write-Host "  Cloud tunnel" -ForegroundColor Cyan
+Write-Host "  local 127.0.0.1:8188  <-  Comfy on the machine"
+Write-Host "  Open the canvas with start.bat. This window is tunnel only."
 Write-Host ""
-Write-Host "  可粘贴控制台整行 ssh，例如："
+Write-Host "  Paste a full ssh line, for example:"
 Write-Host "  ssh -p 12345 root@region.seetacloud.com"
-Write-Host "  也可以只填 IP 或域名。"
+Write-Host "  Or just an IP / hostname."
 Write-Host ""
 
 $lastPath = Join-Path $Root "data\tunnel.last.json"
@@ -55,35 +55,35 @@ if (Test-Path $lastPath) {
   try { $last = Get-Content $lastPath -Raw | ConvertFrom-Json } catch { $last = $null }
 }
 if ($last -and $last.Host) {
-  Write-Host ("  上次：{0}@{1}  端口 {2}  远端 Comfy {3}" -f $last.User, $last.Host, $last.Port, $last.RemotePort) -ForegroundColor DarkGray
+  Write-Host ("  Last: {0}@{1}  port {2}  remote Comfy {3}" -f $last.User, $last.Host, $last.Port, $last.RemotePort) -ForegroundColor DarkGray
 }
 
-$addr = Read-Host "地址或 ssh 命令"
-if (-not $addr) { Write-Host "没填地址。" -ForegroundColor Red; exit 1 }
+$addr = Read-Host "Address or ssh command"
+if (-not $addr) { Write-Host "No address." -ForegroundColor Red; exit 1 }
 $t = Parse-SshTarget $addr
 
 if (-not $t.Port) {
   $hint = if ($last -and $last.Port) { $last.Port } else { "22" }
-  $p = Read-Host "SSH 端口（回车=$hint）"
+  $p = Read-Host "SSH port (Enter=$hint)"
   $t.Port = if ($p) { $p } else { $hint }
 }
 if (-not $t.RemotePort) {
   $hint = if ($last -and $last.RemotePort) { $last.RemotePort } else { "6006" }
-  $rp = Read-Host "机器上 Comfy 端口（回车=$hint；自己开在 8188 就填 8188）"
+  $rp = Read-Host "Comfy port on the machine (Enter=$hint; use 8188 if it already listens there)"
   $t.RemotePort = if ($rp) { $rp } else { $hint }
 }
 
-$sec = Read-Host "密码" -AsSecureString
+$sec = Read-Host "Password" -AsSecureString
 $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto(
   [Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)
 )
-if (-not $plain) { Write-Host "没填密码。" -ForegroundColor Red; exit 1 }
+if (-not $plain) { Write-Host "No password." -ForegroundColor Red; exit 1 }
 
 if (Test-Port 8188) {
   Write-Host ""
-  Write-Host "本机 8188 已经被占用（本机 Comfy 或上次隧道没关）。" -ForegroundColor Yellow
-  Write-Host "先关本机 Comfy，或双击「关闭云端.bat」再连。"
-  Read-Host "按回车退出"
+  Write-Host "Local 8188 is already in use (local Comfy or an old tunnel)." -ForegroundColor Yellow
+  Write-Host "Close local Comfy, or run disconnect-cloud.bat first."
+  Read-Host "Press Enter to exit"
   exit 1
 }
 
@@ -100,8 +100,8 @@ $plinkCmd = Get-Command plink -ErrorAction SilentlyContinue
 $plink = if ($plinkCmd) { $plinkCmd.Source } else { $null }
 
 Write-Host ""
-Write-Host ("正在连接 {0}@{1}:{2}  ->  远端 {3} …" -f $t.User, $t.Host, $t.Port, $t.RemotePort) -ForegroundColor Cyan
-Write-Host "连上后不要关这个窗口。画布设置里地址填 http://127.0.0.1:8188"
+Write-Host ("Connecting {0}@{1}:{2}  ->  remote {3} …" -f $t.User, $t.Host, $t.Port, $t.RemotePort) -ForegroundColor Cyan
+Write-Host "Keep this window open. In Settings, Comfy URL is http://127.0.0.1:8188"
 Write-Host ""
 
 $passFile = Join-Path $env:TEMP ("jc-ssh-" + [guid]::NewGuid().ToString("n") + ".txt")
@@ -130,12 +130,12 @@ try {
     & $plink -batch -ssh -P $t.Port -pw $plain -N -C `
       -L "8188:127.0.0.1:$($t.RemotePort)" "$($t.User)@$($t.Host)"
   } else {
-    Write-Host "没找到 ssh。Windows 设置 → 应用 → 可选功能 → OpenSSH 客户端。" -ForegroundColor Red
+    Write-Host "ssh not found. Windows Settings → Apps → Optional features → OpenSSH Client." -ForegroundColor Red
     exit 1
   }
   $code = $LASTEXITCODE
   if ($code -ne 0) {
-    Write-Host "隧道断了（$code）。检查地址、端口、密码，以及机器上 Comfy 是否已开。" -ForegroundColor Red
+    Write-Host "Tunnel dropped ($code). Check host, port, password, and whether Comfy is running." -ForegroundColor Red
     exit $code
   }
 } finally {

@@ -308,7 +308,7 @@ export const useStudio = create<State>()((set, get) => ({
           batch: "",
           historyOpen: false,
         });
-        get().setToast(had ? "已新建。上一份在「历史画布」里" : "已是空白画布");
+        get().setToast(had ? "New canvas. Last one is in History." : "Empty canvas");
       },
       openCanvas: async (id) => {
         const c = await api.loadCanvas(id);
@@ -326,7 +326,7 @@ export const useStudio = create<State>()((set, get) => ({
         for (const n of nodes) {
           if (n.data.kind === "script" && n.data.promptsReady) get().bindShotAssets(n.id);
         }
-        get().setToast("已打开历史画布");
+        get().setToast("Opened from History");
       },
       deleteHistory: async (id) => {
         const r = await api.deleteCanvas(id);
@@ -337,7 +337,7 @@ export const useStudio = create<State>()((set, get) => ({
             ? { nodes: [], edges: [], bible: defaultBible(), canvasId: null, scriptFull: "", sheet: null, batch: "" }
             : {}),
         });
-        get().setToast("已从历史里删掉");
+        get().setToast("Removed from History");
       },
       setScriptFull: (scriptFull) => set({ scriptFull }),
       setSheet: (sheet) => set({ sheet }),
