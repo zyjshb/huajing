@@ -1,0 +1,38 @@
+镜场 × AutoDL（本机画布，云端 5090 出片）
+
+画布不要上传到机器。机器上只跑 ComfyUI + 模型。
+
+【机器上】
+1. 开最新 ComfyUI，启动加：
+   python main.py --listen 0.0.0.0 --port 8188 --enable-cors-header
+2. 模型放到这些目录（Comfy-Org/Wan_2.2_ComfyUI_Repackaged + Flux）：
+
+ComfyUI/models/diffusion_models/
+  wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors
+  wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors
+  flux1-dev-fp8.safetensors          （没有就改工作流里的文件名）
+
+ComfyUI/models/text_encoders/
+  umt5_xxl_fp8_e4m3fn_scaled.safetensors
+  t5xxl_fp8_e4m3fn.safetensors
+  clip_l.safetensors
+
+ComfyUI/models/vae/
+  wan_2.1_vae.safetensors
+  ae.safetensors
+
+ComfyUI/models/clip_vision/
+  clip_vision_h.safetensors
+
+3. 可把 镜场_镜头_API.json 拖进 ComfyUI 看节点是否全绿。日常不用在云端点 Queue，本机画布会打 API。
+
+【本机】
+推荐 SSH 隧道，画布填 http://127.0.0.1:8188
+
+ssh -C -L 8188:127.0.0.1:8188 -p 【SSH端口】 root@【AutoDL主机】
+
+也可以在 AutoDL「自定义服务」映射 8188，把给的 https 地址填进画布「云端 Comfy」。
+
+5090 用 fp8 的 14B 图生视频。默认 16fps，6 秒约 97 帧；想更稳可把时长改 5 秒（81 帧）。
+
+多参考：第一张=首帧，第二张=尾帧（入/出锁图），后面的图目前写进提示词，Wan 2.2 原生不吃第三张图。

@@ -1,0 +1,9 @@
+node_modules
+dist
+data
+*.local
+.DS_Store
+*.tsbuildinfo
+*.lnk
+scripts/够强才配温柔.txt
+scripts/雨夜房卡.txt

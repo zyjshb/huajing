@@ -1,0 +1,32 @@
+4060 笔记本 8GB · 镜场本机模型（成人向短剧自己看）
+
+不要下 14B / Flux 全量，8GB 会爆。剧本我在 Cursor 里写，你丢进画布即可。
+
+【生图 · 放 ComfyUI/models/checkpoints/】
+必装（色情短剧锁图就靠它）：
+  ponyDiffusionV6XL.safetensors
+  下完改成这个文件名，或改工作流里的 ckpt_name。
+  Civitai 搜 Pony Diffusion V6 XL。成人内容它不审查。
+
+写实一点再加一个（可选，不同时载入）：
+  lustifySDXL 或 CyberRealisticPony
+
+负面里已经写了 child / loli / shota，不要用那类模型。
+
+【镜头 · 图生视频】
+  diffusion_models/wan2.2_ti2v_5B_fp16.safetensors
+  vae/wan2.2_vae.safetensors
+  text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors
+Comfy-Org/Wan_2.2_ComfyUI_Repackaged 里下。5B 才是 8GB 能跑的；14B 留给 AutoDL 5090。
+
+默认 640×384，约 3 秒。想更稳把时长改 4。一条 6–15 秒在 4060 上会很慢或爆显存。
+
+【画布】
+ComfyUI 先开：http://127.0.0.1:8188
+镜场设置里云端地址填这个。工作流用：
+  镜场_4060_分镜图_API.json
+  镜场_4060_镜头_API.json
+（已改成默认）
+
+【剧本】
+把我给你的 txt / json 拖进画布，或点 + → 导入剧本。不要指望本机再拆一次剧本。
